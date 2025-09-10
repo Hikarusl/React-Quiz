@@ -11,7 +11,9 @@ import FinishScreen from "./FinishScreen";
 import Footer from "./Footer";
 import Timer from "./Timer";
 
-const TIME_PER_OUESTION = 30
+import questionsData from '../data/questions.json';
+
+const TIME_PER_QUESTION = 30
 const initialState = {
   questions: [],
 
@@ -39,7 +41,7 @@ function reducer(state, action) {
     case "start": {
       return {...state,
         status: 'active',
-        secondsRemaining: state.questions.length * TIME_PER_OUESTION
+        secondsRemaining: state.questions.length * TIME_PER_QUESTION
 
       }
     }
@@ -97,12 +99,18 @@ export default function App() {
   }, 0)
 
   useEffect(function() {
-    fetch("http://localhost:8000/questions")
-      .then((res)=>res.json())
-      .then((data)=> dispatch({type: "dataReceived",
-                                    payload: data}))
-      .catch((err)=> dispatch({type: "dataFailed"}))
-
+    // fetch("http://localhost:8000/questions")
+    //   .then((res)=>res.json())
+    //   .then((data)=> dispatch({type: "dataReceived",
+    //                                 payload: data}))
+    //   .catch((err)=> dispatch({type: "dataFailed"}))
+    try {
+      // имитация fetch, но берем данные из локального JSON
+      const {data} = questionsData;
+      dispatch({ type: "dataReceived", payload: data });
+    } catch (err) {
+      dispatch({ type: "dataFailed" });
+    }
   }, [])
 
   return (
